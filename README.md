@@ -1,6 +1,8 @@
 # Advent of Code 2015
 
-My solutions for [Advent of Code 2015](http://adventofcode.com/2015).
+My solutions for [Advent of Code 2015](http://adventofcode.com/2015), written in Javascript. Output is via <code>console.log()</code>.
+
+Most of the scripts will output solutions for both parts 1 and 2, for others you will need to uncomment/modify some lines.
 
 ## Notes
 
