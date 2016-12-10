@@ -1,0 +1,57 @@
+<script>
+
+var size = 100,
+	ingredients = [];
+
+function cookieValue(recipe) {
+	var cap = 0, dur = 0, fla = 0, tex = 0, cal = 0;
+	for (var i = 0; i < recipe.length; i++) {
+		cap += recipe[i] * ingredients[i].capacity;
+		dur += recipe[i] * ingredients[i].durability;
+		fla += recipe[i] * ingredients[i].flavor;
+		tex += recipe[i] * ingredients[i].texture;
+		cal += recipe[i] * ingredients[i].calories;
+	}
+	return {
+		val: Math.max(cap, 0) * Math.max(dur, 0) * Math.max(fla, 0) * Math.max(tex, 0),
+		cal: Math.max(cal, 0)
+	};
+}
+
+window.addEventListener("load", function() {
+	var parts = null;
+	for (var i = input.length; i--;) {
+		parts = input[i].split(/[\: ]/);
+		ingredients.push({
+			capacity:	parseInt(parts[3]),
+			durability:	parseInt(parts[5]),
+			flavor:		parseInt(parts[7]),
+			texture:	parseInt(parts[9]),
+			calories:	parseInt(parts[11])
+		});
+	}
+	var max = -Infinity,
+		current = null;
+	for (var sugar = 0; sugar < size; sugar++) {
+		for (var sprinkles = 0; sprinkles < size - sugar; sprinkles++) {
+			for (var candy = 0; candy < size - sugar - sprinkles; candy++) {
+				chocolate = size - sugar - sprinkles - candy;
+				current = cookieValue([sugar, sprinkles, candy, chocolate]);
+				if (current.cal != 500) {
+					continue;
+				}
+				max = Math.max(max, current.val);
+			}
+		}
+	}
+	console.log(max);
+}, false);
+
+var input = [
+	"Sugar: capacity 3, durability 0, flavor 0, texture -3, calories 2",
+	"Sprinkles: capacity -3, durability 3, flavor 0, texture 0, calories 9",
+	"Candy: capacity -1, durability 0, flavor 4, texture 0, calories 1",
+	"Chocolate: capacity 0, durability 0, flavor -2, texture 2, calories 8"
+];
+
+</script>

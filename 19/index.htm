@@ -1,0 +1,112 @@
+<script>
+
+var molecule = "CRnCaSiRnBSiRnFArTiBPTiTiBFArPBCaSiThSiRnTiBPBPMgArCaSiRnTiMgArCaSiThCaSiRnFArRnSiRnFArTiTiBFArCaCaSiRnSiThCaCaSiRnMgArFYSiRnFYCaFArSiThCaSiThPBPTiMgArCaPRnSiAlArPBCaCaSiRnFYSiThCaRnFArArCaCaSiRnPBSiRnFArMgYCaCaCaCaSiThCaCaSiAlArCaCaSiRnPBSiAlArBCaCaCaCaSiThCaPBSiThPBPBCaSiRnFYFArSiThCaSiRnFArBCaCaSiRnFYFArSiThCaPBSiThCaSiRnPMgArRnFArPTiBCaPRnFArCaCaCaCaSiRnCaCaSiRnFYFArFArBCaSiThFArThSiThSiRnTiRnPMgArFArCaSiThCaPBCaSiRnBFArCaCaPRnCaCaPMgArSiRnFYFArCaSiThRnPBPMgAr",
+	replacements = [],
+	shortestPath = Infinity;
+
+String.prototype.splice = function(index, count, add) {
+	return this.slice(0, index) + (add || "") + this.slice(index + count);
+};
+
+Array.prototype.unique = function() {
+	var seen = {};
+	return this.filter(function(i) {
+		return seen.hasOwnProperty(i) ? false : (seen[i] = true);
+	});
+};
+
+window.addEventListener("load", function() {
+	var molecules = [], index, startIndex, replacement = null;
+	
+	// Part 1
+	for (var i = 0, length = input.length; i < length; i++) {
+		index = -1;
+		startIndex = 0;
+		replacement = input[i].split(" => ");
+		replacements.push(replacement);
+		while ((index = molecule.indexOf(replacement[0], startIndex)) > -1) {
+			molecules.push(molecule.splice(index, replacement[0].length, replacement[1]));
+			startIndex = index + replacement[0].length;
+		}
+	}
+	console.log(molecules.unique().length);
+	
+	// Part 2
+	// Working backwards from the target molecule to the starting molecule is much faster if the
+	// replacements are sorted by length (descending)
+	replacements.sort(function(a, b) { return b[1].length - a[1].length; });
+}, false);
+
+// Takes a while, doesn't terminate after finding the first shortest path (fortunately the input
+// is generated such that the first shortest path found is the correct one, otherwise this could
+// take a long, long time - the search space is massive)
+function recurse(m, d) {
+	if (d > 300) {	// Recursion depth limit
+		return;
+	}
+	var index = -1,
+		currentMolecule = "";
+	for (var i = 0, length = replacements.length; i < length; i++) {
+		index = m.indexOf(replacements[i][1]);
+		while (index != -1) {
+			currentMolecule = m.splice(index, replacements[i][1].length, replacements[i][0]);
+			if (currentMolecule == "e" && d < shortestPath) {
+				shortestPath = d;
+				console.log(shortestPath);
+				debugger;
+			}
+			recurse(currentMolecule, d + 1);
+			index = m.indexOf(replacements[i][1], index + 1);
+		}
+	}
+}
+
+var input = [
+	"Al => ThF",
+	"Al => ThRnFAr",
+	"B => BCa",
+	"B => TiB",
+	"B => TiRnFAr",
+	"Ca => CaCa",
+	"Ca => PB",
+	"Ca => PRnFAr",
+	"Ca => SiRnFYFAr",
+	"Ca => SiRnMgAr",
+	"Ca => SiTh",
+	"F => CaF",
+	"F => PMg",
+	"F => SiAl",
+	"H => CRnAlAr",
+	"H => CRnFYFYFAr",
+	"H => CRnFYMgAr",
+	"H => CRnMgYFAr",
+	"H => HCa",
+	"H => NRnFYFAr",
+	"H => NRnMgAr",
+	"H => NTh",
+	"H => OB",
+	"H => ORnFAr",
+	"Mg => BF",
+	"Mg => TiMg",
+	"N => CRnFAr",
+	"N => HSi",
+	"O => CRnFYFAr",
+	"O => CRnMgAr",
+	"O => HP",
+	"O => NRnFAr",
+	"O => OTi",
+	"P => CaP",
+	"P => PTi",
+	"P => SiRnFAr",
+	"Si => CaSi",
+	"Th => ThCa",
+	"Ti => BP",
+	"Ti => TiTi",
+	"e => HF",
+	"e => NAl",
+	"e => OMg"
+];
+
+</script>
+<body>
+<a href="javascript:recurse(molecule, 1)">Calculate shortest path to molecule...</a>

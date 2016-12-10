@@ -1,0 +1,152 @@
+<script>
+
+var happiness = [];
+function parse(str) {
+	var parts = str.substring(0, str.length - 1).split(" "),
+		getPoints = function(s, v) { return parseInt(s == "gain" ? v : -v); };
+	if (!happiness[parts[0]]) {
+		happiness[parts[0]] = [];
+	}
+	if (!happiness[parts[10]]) {
+		happiness[parts[10]] = [];
+	}
+	happiness[parts[0]][parts[10]] = getPoints(parts[2], parts[3]);
+	happiness[parts[0]][parts[10]] = getPoints(parts[2], parts[3]);
+}
+
+function getPermutations(a) {
+	var permutations = [];
+	if (a.length == 1) {
+		return [a];
+	}
+	for (var i = 0; i < a.length; i++) {
+		var p = getPermutations(a.slice(0, i).concat(a.slice(i + 1)));
+		for (var j = 0; j < p.length; j++) {
+			p[j].unshift(a[i]);
+			permutations.push(p[j]);
+		}
+	}
+	return permutations;
+}
+
+function max(a) {
+	var result = -Infinity;
+	for (var i = a.length; i--;) {
+		if (a[i] > result) {
+			result = a[i];
+		}
+	}
+	return result;
+}
+
+function solve() {
+	happiness = [];
+	for (var i = input.length; i--;) {
+		parse(input[i]);
+	}
+	var permutations = getPermutations(Object.keys(happiness)),
+		arrangements = [],
+		current = 0,
+		a = null,
+		b = null;
+	for (var i = 0, l1 = permutations.length; i < l1; i++) {
+		current = 0;
+		for (var j = 0, l2 = permutations[i].length; j < l2; j++) {
+			a = permutations[i][j];
+			b = j ? permutations[i][j - 1] : permutations[i][permutations[i].length - 1];
+			current += happiness[a][b];
+			current += happiness[b][a];
+		}
+		arrangements.push(current);
+	}
+	return max(arrangements);
+}
+
+window.addEventListener("load", function() {
+	// Part 1
+	console.log(solve());
+	
+	// Part 2
+	input = input.concat(input2);
+	console.log(solve());
+}, false);
+
+var input = [
+	"Alice would lose 2 happiness units by sitting next to Bob.",
+	"Alice would lose 62 happiness units by sitting next to Carol.",
+	"Alice would gain 65 happiness units by sitting next to David.",
+	"Alice would gain 21 happiness units by sitting next to Eric.",
+	"Alice would lose 81 happiness units by sitting next to Frank.",
+	"Alice would lose 4 happiness units by sitting next to George.",
+	"Alice would lose 80 happiness units by sitting next to Mallory.",
+	"Bob would gain 93 happiness units by sitting next to Alice.",
+	"Bob would gain 19 happiness units by sitting next to Carol.",
+	"Bob would gain 5 happiness units by sitting next to David.",
+	"Bob would gain 49 happiness units by sitting next to Eric.",
+	"Bob would gain 68 happiness units by sitting next to Frank.",
+	"Bob would gain 23 happiness units by sitting next to George.",
+	"Bob would gain 29 happiness units by sitting next to Mallory.",
+	"Carol would lose 54 happiness units by sitting next to Alice.",
+	"Carol would lose 70 happiness units by sitting next to Bob.",
+	"Carol would lose 37 happiness units by sitting next to David.",
+	"Carol would lose 46 happiness units by sitting next to Eric.",
+	"Carol would gain 33 happiness units by sitting next to Frank.",
+	"Carol would lose 35 happiness units by sitting next to George.",
+	"Carol would gain 10 happiness units by sitting next to Mallory.",
+	"David would gain 43 happiness units by sitting next to Alice.",
+	"David would lose 96 happiness units by sitting next to Bob.",
+	"David would lose 53 happiness units by sitting next to Carol.",
+	"David would lose 30 happiness units by sitting next to Eric.",
+	"David would lose 12 happiness units by sitting next to Frank.",
+	"David would gain 75 happiness units by sitting next to George.",
+	"David would lose 20 happiness units by sitting next to Mallory.",
+	"Eric would gain 8 happiness units by sitting next to Alice.",
+	"Eric would lose 89 happiness units by sitting next to Bob.",
+	"Eric would lose 69 happiness units by sitting next to Carol.",
+	"Eric would lose 34 happiness units by sitting next to David.",
+	"Eric would gain 95 happiness units by sitting next to Frank.",
+	"Eric would gain 34 happiness units by sitting next to George.",
+	"Eric would lose 99 happiness units by sitting next to Mallory.",
+	"Frank would lose 97 happiness units by sitting next to Alice.",
+	"Frank would gain 6 happiness units by sitting next to Bob.",
+	"Frank would lose 9 happiness units by sitting next to Carol.",
+	"Frank would gain 56 happiness units by sitting next to David.",
+	"Frank would lose 17 happiness units by sitting next to Eric.",
+	"Frank would gain 18 happiness units by sitting next to George.",
+	"Frank would lose 56 happiness units by sitting next to Mallory.",
+	"George would gain 45 happiness units by sitting next to Alice.",
+	"George would gain 76 happiness units by sitting next to Bob.",
+	"George would gain 63 happiness units by sitting next to Carol.",
+	"George would gain 54 happiness units by sitting next to David.",
+	"George would gain 54 happiness units by sitting next to Eric.",
+	"George would gain 30 happiness units by sitting next to Frank.",
+	"George would gain 7 happiness units by sitting next to Mallory.",
+	"Mallory would gain 31 happiness units by sitting next to Alice.",
+	"Mallory would lose 32 happiness units by sitting next to Bob.",
+	"Mallory would gain 95 happiness units by sitting next to Carol.",
+	"Mallory would gain 91 happiness units by sitting next to David.",
+	"Mallory would lose 66 happiness units by sitting next to Eric.",
+	"Mallory would lose 75 happiness units by sitting next to Frank.",
+	"Mallory would lose 99 happiness units by sitting next to George."
+];
+
+var input2 = [
+	"Alice would gain 0 happiness units by sitting next to Santa.",
+	"Bob would gain 0 happiness units by sitting next to Santa.",
+	"Carol would gain 0 happiness units by sitting next to Santa.",
+	"David would gain 0 happiness units by sitting next to Santa.",
+	"Eric would gain 0 happiness units by sitting next to Santa.",
+	"Frank would gain 0 happiness units by sitting next to Santa.",
+	"George would gain 0 happiness units by sitting next to Santa.",
+	"Mallory would gain 0 happiness units by sitting next to Santa.",
+	"Santa would gain 0 happiness units by sitting next to Alice.",
+	"Santa would gain 0 happiness units by sitting next to Bob.",
+	"Santa would gain 0 happiness units by sitting next to Carol.",
+	"Santa would gain 0 happiness units by sitting next to David.",
+	"Santa would gain 0 happiness units by sitting next to Eric.",
+	"Santa would gain 0 happiness units by sitting next to Frank.",
+	"Santa would gain 0 happiness units by sitting next to George.",
+	"Santa would gain 0 happiness units by sitting next to Mallory."
+];
+
+</script>

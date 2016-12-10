@@ -1,0 +1,89 @@
+<script>
+
+var cpu = { ip: 0, a: 0, b: 0 },
+	instructionSet = {
+		"hlf": function(a) { cpu[a] = Math.floor(cpu[a] / 2); cpu.ip++; },
+		"tpl": function(a) { cpu[a] *= 3; cpu.ip++; },
+		"inc": function(a) { cpu[a]++; cpu.ip++; },
+		"jmp": function(a) { cpu.ip += a; },
+		"jie": function(a, b) { if (cpu[a] % 2 == 0) { cpu.ip += b; } else { cpu.ip++; } },
+		"jio": function(a, b) { if (cpu[a] == 1) { cpu.ip += b; } else { cpu.ip++; } }
+	};
+
+function tokenize(s) {
+	var parts = s.split(/[\s,]+/),
+		result = { instruction: parts[0], operands: [parts[1]] };
+	if (result.instruction == "jmp") {
+		result.operands[0] = parseInt(parts[1]);
+	} else if (result.instruction == "jie" || result.instruction == "jio") {
+		result.operands.push(parseInt(parts[2]));
+	}
+	return result;
+}
+
+window.addEventListener("load", function() {
+	var instructions = [],
+		max = 10000;
+	for (var i = 0, length = input.length; i < length; i++) {
+		instructions.push(tokenize(input[i]));
+	}
+	while (cpu.ip >= 0 && cpu.ip < instructions.length) {
+		if (max-- <= 0) {
+			console.log("Program terminated");
+			break;
+		}
+		instructionSet[instructions[cpu.ip].instruction].apply(null, instructions[cpu.ip].operands);
+	}
+	console.log(cpu);
+}, false);
+
+var input = [
+	"jio a, +16",
+	"inc a",
+	"inc a",
+	"tpl a",
+	"tpl a",
+	"tpl a",
+	"inc a",
+	"inc a",
+	"tpl a",
+	"inc a",
+	"inc a",
+	"tpl a",
+	"tpl a",
+	"tpl a",
+	"inc a",
+	"jmp +23",
+	"tpl a",
+	"inc a",
+	"inc a",
+	"tpl a",
+	"inc a",
+	"inc a",
+	"tpl a",
+	"tpl a",
+	"inc a",
+	"inc a",
+	"tpl a",
+	"inc a",
+	"tpl a",
+	"inc a",
+	"tpl a",
+	"inc a",
+	"inc a",
+	"tpl a",
+	"inc a",
+	"tpl a",
+	"tpl a",
+	"inc a",
+	"jio a, +8",
+	"inc b",
+	"jie a, +4",
+	"tpl a",
+	"inc a",
+	"jmp +2",
+	"hlf a",
+	"jmp -7"
+];
+
+</script>

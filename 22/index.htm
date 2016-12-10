@@ -1,0 +1,38 @@
+<script>
+
+var worker = null;
+
+window.addEventListener("load", function() {
+	var battleCount = 0,
+		playerWins = 0,
+		bossWins = 0,
+		lowestCost = Infinity;
+	worker = new Worker("battle.js");
+	worker.onmessage = function(e) {
+		battleCount++;
+		if (e.data.playerWins) {
+			playerWins++;
+			lowestCost = Math.min(e.data.totalCost, lowestCost);
+		} else {
+			bossWins++;
+		}
+		document.getElementById("battle-count").innerText = battleCount;
+		document.getElementById("player-wins").innerText = playerWins;
+		document.getElementById("boss-wins").innerText = bossWins;
+		document.getElementById("lowest-cost").innerText = lowestCost;
+	};
+}, false);
+
+function start() {
+	if (!worker) { return; }
+	worker.postMessage("start");
+}
+
+</script>
+<body>
+	<a href="javascript:start()">Start</a>
+	<div>Battles: <span id="battle-count"></span></div>
+	<div>Player: <span id="player-wins"></span></div>
+	<div>Boss: <span id="boss-wins"></span></div>
+	<div>Lowest cost: <span id="lowest-cost"></span></div>
+</body>

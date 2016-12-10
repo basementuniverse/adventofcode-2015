@@ -1,0 +1,38 @@
+<script>
+
+var input = 34000000;
+
+// n - house number
+// p - presents per elf
+// l - max number of houses per elf (-1 for unlimited)
+function presents(n, p, l) {
+	l = l || -1;
+	var result = 0;
+	for (var i = 1, j = Math.sqrt(n); i <= j; i++) {
+		if (n % i == 0) {
+			if (l == -1 || i * l > n) {
+				result += i * p;
+			}
+			if (i != n / i) {
+				if (l == -1 || (n / i) * l > n) {
+					result += (n / i) * p;
+				}
+			}
+		}
+	}
+	return result;
+}
+
+window.addEventListener("load", function() {
+	// Part 1
+	var i = 0;
+	while (presents(++i, 10) <= input) { }
+	console.log("House %i got %i presents.", i, presents(i, 10));
+	
+	// Part 2
+	i = 0;
+	while (presents(++i, 11, 50) <= input) { }
+	console.log("House %i got %i presents.", i, presents(i, 11, 50));
+}, false);
+
+</script>

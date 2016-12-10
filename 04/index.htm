@@ -1,0 +1,20 @@
+<script src="md5.js"></script>
+<script>
+
+function check(s, n) { return s.substring(0, n) == Array(n + 1).join("0"); }
+
+window.addEventListener("load", function() {
+	var input = "iwrupvqb",
+		limit = 100000000,
+		i = -1,
+		result = -1;
+	while (++i < limit) {
+		if (check(md5(input + i), 5)) {
+			result = i;
+			break;
+		}
+	}
+	console.log("Result: %i", result);
+}, false);
+
+</script>

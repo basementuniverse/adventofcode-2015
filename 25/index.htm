@@ -1,0 +1,34 @@
+<script>
+
+var input = {
+	row: 2947,
+	col: 3029
+};
+
+var startCode = 20151125;
+
+function nextCode(n) {
+	return (n * 252533) % 33554393;
+}
+
+window.addEventListener("load", function() {
+	var i = 1, x = 1, y = 1, yStart = 1, code = startCode;
+	while (true) {
+		i++;
+		if (x == yStart) {
+			yStart++;
+			x = 1;
+			y = yStart;
+		} else {
+			x++;
+			y--;
+		}
+		code = nextCode(code);
+		if (x == input.col && y == input.row) {
+			console.log(code);
+			break;
+		}
+	}
+}, false);
+
+</script>

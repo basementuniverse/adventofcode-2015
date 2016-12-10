@@ -1,0 +1,38 @@
+<script>
+
+var input = "3113322113";
+
+function lookSay(s) {
+	var result = "",
+		current = s[0],
+		count = 1;
+	for (var i = 1, length = s.length; i < length; i++) {
+		if (s[i] == current) {
+			count++;
+		} else {
+			result += count + "" + current;
+			current = s[i];
+			count = 1;
+		}
+	}
+	result += count + "" + current;
+	return result;
+}
+
+window.addEventListener("load", function() {
+	var current = input;
+	
+	// Part 1
+	for (var i = 0; i < 40; i++) {
+		current = lookSay(current);
+	}
+	console.log(current.length);
+	
+	// Part 2
+	for (var i = 0; i < 10; i++) {
+		current = lookSay(current);
+	}
+	console.log(current.length);
+}, false);
+
+</script>

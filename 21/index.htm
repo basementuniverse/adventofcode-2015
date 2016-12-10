@@ -1,0 +1,119 @@
+<script>
+
+var boss = {
+	hitPoints: 100,
+	damage: 8,
+	armour: 2
+};
+
+var player = {
+	hitPoints: 100,
+	damage: function(inventory) { return inventory.reduce((p, c) => p + c.damage, 0); },
+	armour: function(inventory) { return inventory.reduce((p, c) => p + c.armour, 0); }
+};
+
+var weapons = [],
+	armour = [],
+	rings = [];
+
+window.addEventListener("load", function() {
+	var items = document.getElementById("shop").textContent.split(/\n/),
+		makeItem = function(i, r) {
+			var item = i.split(r || /\s+/);
+			return {
+				name: item[0],
+				cost: parseInt(item[1]),
+				damage: parseInt(item[2]),
+				armour: parseInt(item[3])
+			};
+		};
+	for (var i = 1; i < 6; i++) { weapons.push(makeItem(items[i])); }
+	for (var i = 8; i < 13; i++) { armour.push(makeItem(items[i])); }
+	for (var i = 15; i < 21; i++) { rings.push(makeItem(items[i], /\s{2,}/)); }
+	
+	// Part 1
+	var lowestCost = Infinity,
+		highestCost = -Infinity,
+		inventory = null,
+		cost = 0;
+	for (var w = 0; w < weapons.length; w++) {
+		for (var a = -1; a < armour.length; a++) {
+			for (var r1 = -1; r1 < rings.length; r1++) {
+				for (var r2 = -1; r2 < rings.length; r2++) {
+					if (r1 == r2) { continue; }
+					inventory = [];
+					inventory.push(weapons[w]);
+					if (a >= 0) { inventory.push(armour[a]); }
+					if (r1 >= 0) { inventory.push(rings[r1]); }
+					if (r2 >= 0) { inventory.push(rings[r2]); }
+					cost = calculateCost(inventory);
+					if (battle(inventory)) {
+						lowestCost = Math.min(lowestCost, cost);
+					} else {
+						highestCost = Math.max(highestCost, cost);
+					}
+				}
+			}
+		}
+	}
+	console.log(lowestCost);
+	console.log(highestCost);
+}, false);
+
+function calculateCost(inventory) {
+	return inventory.reduce((p, c) => p + c.cost, 0);
+}
+
+// Return true if the player wins
+function battle(inventory) {
+	var playersTurn = true,
+		playerHitPoints = player.hitPoints,
+		bossHitPoints = boss.hitPoints,
+		d = 0,
+		a = 0;
+	while (true) {
+		if (playersTurn) {
+			d = player.damage(inventory);
+			a = boss.armour;
+			bossHitPoints -= Math.max(d - a, 1);
+			if (bossHitPoints <= 0) {
+				return true;
+			}
+		} else {
+			d = boss.damage;
+			a = player.armour(inventory);
+			playerHitPoints -= Math.max(d - a, 1);
+			if (playerHitPoints <= 0) {
+				return false;
+			}
+		}
+		playersTurn = !playersTurn;
+	}
+}
+
+</script>
+<body>
+<pre id="shop">
+Weapons:    Cost  Damage  Armor
+Dagger        8     4       0
+Shortsword   10     5       0
+Warhammer    25     6       0
+Longsword    40     7       0
+Greataxe     74     8       0
+
+Armor:      Cost  Damage  Armor
+Leather      13     0       1
+Chainmail    31     0       2
+Splintmail   53     0       3
+Bandedmail   75     0       4
+Platemail   102     0       5
+
+Rings:      Cost  Damage  Armor
+Damage +1    25     1       0
+Damage +2    50     2       0
+Damage +3   100     3       0
+Defense +1   20     0       1
+Defense +2   40     0       2
+Defense +3   80     0       3
+</pre>
+</body>

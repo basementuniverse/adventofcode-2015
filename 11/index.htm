@@ -1,0 +1,37 @@
+<script>
+
+var input = "hepxcrrq";
+
+function incrementPassword(p) {
+	return (parseInt(p, 36) + 1).toString(36).replace(/0/, "a");
+}
+
+function checkPassword(p) {
+	if (/[iol]/gi.test(p)) {
+		return false;
+	}
+	if (!/([a-z])\1.*([a-z])\2/gi.test(p)) {
+		return false;
+	}
+	if (!/abc|bcd|cde|def|efg|fgh|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz/gi.test(p)) {
+		return false;
+	}
+	return true;
+}
+
+function nextValidPassword(p) {
+	do {
+		p = incrementPassword(p);
+	} while (!checkPassword(p));
+	return p;
+}
+
+window.addEventListener("load", function() {
+	var p = input;
+	p = nextValidPassword(p);
+	console.log(p);
+	p = nextValidPassword(p);
+	console.log(p);
+}, false);
+
+</script>

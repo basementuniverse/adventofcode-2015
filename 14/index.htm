@@ -1,0 +1,84 @@
+<script>
+
+var time = 2503;
+
+var reindeers = [],
+	distances = [];
+
+function getDistance(r) {
+	var t = 0,
+		d = 0,
+		rest = false;
+	while (t < time) {
+		if (rest) {
+			t += r.rest;
+		} else if (t + r.fly > time) {
+			d += r.speed * -(t - time);
+			t = time;
+		} else {
+			t += r.fly;
+			d += r.speed * r.fly;
+		}
+		rest = !rest;
+	}
+	return d;
+}
+
+function simulate() {
+	var t = 0,
+		r = null;
+	while (t++ < time) {
+		for (var i = 0, length = reindeers.length; i < length; i++) {
+			r = reindeers[i];
+			if (--r.currentTime <= 0) {
+				r.resting = !r.resting;
+				r.currentTime = r.resting ? r.rest : r.fly;
+			}
+			r.distance += r.resting ? 0 : r.speed;
+		}
+		reindeers.sort(function(a, b) { return b.distance - a.distance; });
+		reindeers[0].points++;
+	}
+	reindeers.sort(function(a, b) { return b.points - a.points; });
+	return reindeers[0].points;
+}
+
+window.addEventListener("load", function() {
+	var parts = null,
+		reindeer = null;
+	for (var i = input.length; i--;) {
+		parts = input[i].split(" ");
+		reindeer = {
+			name: parts[0],
+			speed: parseInt(parts[3]),
+			fly: parseInt(parts[6]),
+			rest: parseInt(parts[13]),
+			resting: true,
+			distance: 0,
+			points: 0,
+			currentTime: 0
+		};
+		distances.push(getDistance(reindeer));
+		reindeers.push(reindeer);
+	}
+	
+	// Part 1
+	console.log(Math.max.apply(null, distances));
+	
+	// Part 2
+	console.log(simulate());
+}, false);
+
+var input = [
+	"Rudolph can fly 22 km/s for 8 seconds, but then must rest for 165 seconds.",
+	"Cupid can fly 8 km/s for 17 seconds, but then must rest for 114 seconds.",
+	"Prancer can fly 18 km/s for 6 seconds, but then must rest for 103 seconds.",
+	"Donner can fly 25 km/s for 6 seconds, but then must rest for 145 seconds.",
+	"Dasher can fly 11 km/s for 12 seconds, but then must rest for 125 seconds.",
+	"Comet can fly 21 km/s for 6 seconds, but then must rest for 121 seconds.",
+	"Blitzen can fly 18 km/s for 3 seconds, but then must rest for 50 seconds.",
+	"Vixen can fly 20 km/s for 4 seconds, but then must rest for 75 seconds.",
+	"Dancer can fly 7 km/s for 20 seconds, but then must rest for 119 seconds."
+];
+
+</script>

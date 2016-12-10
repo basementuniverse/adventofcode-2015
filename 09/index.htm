@@ -1,0 +1,80 @@
+<script>
+
+var distances = [];
+function parse(str) {
+	var parts = str.split(" ");
+	if (!distances[parts[0]]) {
+		distances[parts[0]] = [];
+	}
+	if (!distances[parts[2]]) {
+		distances[parts[2]] = [];
+	}
+	distances[parts[0]][parts[2]] = parseInt(parts[4]);
+	distances[parts[2]][parts[0]] = parseInt(parts[4]);
+}
+
+function getPermutations(a) {
+	var permutations = [];
+	if (a.length == 1) {
+		return [a];
+	}
+	for (var i = 0; i < a.length; i++) {
+		var p = getPermutations(a.slice(0, i).concat(a.slice(i + 1)));
+		for (var j = 0; j < p.length; j++) {
+			p[j].unshift(a[i]);
+			permutations.push(p[j]);
+		}
+	}
+	return permutations;
+}
+
+window.addEventListener("load", function() {
+	for (var i = 0, length = input.length; i < length; i++) {
+		parse(input[i]);
+	}
+	var permutations = getPermutations(Object.keys(distances)),
+		routeDistances = [],
+		current = 0;
+	for (var i = 0, l1 = permutations.length; i < l1; i++) {
+		current = 0;
+		for (var j = 1, l2 = permutations[i].length; j < l2; j++) {
+			current += distances[permutations[i][j - 1]][permutations[i][j]];
+		}
+		routeDistances.push(current);
+	}
+	console.log(Math.min.apply(null, routeDistances));
+	console.log(Math.max.apply(null, routeDistances));
+}, false);
+
+var input = [
+	"Tristram to AlphaCentauri = 34",
+	"Tristram to Snowdin = 100",
+	"Tristram to Tambi = 63",
+	"Tristram to Faerun = 108",
+	"Tristram to Norrath = 111",
+	"Tristram to Straylight = 89",
+	"Tristram to Arbre = 132",
+	"AlphaCentauri to Snowdin = 4",
+	"AlphaCentauri to Tambi = 79",
+	"AlphaCentauri to Faerun = 44",
+	"AlphaCentauri to Norrath = 147",
+	"AlphaCentauri to Straylight = 133",
+	"AlphaCentauri to Arbre = 74",
+	"Snowdin to Tambi = 105",
+	"Snowdin to Faerun = 95",
+	"Snowdin to Norrath = 48",
+	"Snowdin to Straylight = 88",
+	"Snowdin to Arbre = 7",
+	"Tambi to Faerun = 68",
+	"Tambi to Norrath = 134",
+	"Tambi to Straylight = 107",
+	"Tambi to Arbre = 40",
+	"Faerun to Norrath = 11",
+	"Faerun to Straylight = 66",
+	"Faerun to Arbre = 144",
+	"Norrath to Straylight = 115",
+	"Norrath to Arbre = 135",
+	"Straylight to Arbre = 127"
+];
+
+</script>
